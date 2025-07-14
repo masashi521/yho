@@ -12,18 +12,39 @@
             height: 100%;
             margin: 0;
             padding: 0;
+            overflow: hidden; /* bodyのスクロールを禁止 */
         }
         body {
             font-family: 'Inter', sans-serif;
+        }
+        /* ヘッダーの表示・非表示アニメーション */
+        #chat-header {
+            position: absolute; /* ヘッダーを絶対配置に変更 */
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            transition: transform 0.3s ease-in-out;
+            background-color: white; /* 背景色を指定 */
+        }
+        .header-hidden {
+            transform: translateY(-100%);
+        }
+        /* チャットコンテナの親要素 */
+        .chat-wrapper {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
     </style>
 </head>
 <body class="bg-gray-100">
 
     <!-- コンテナ全体をFlexboxにして高さいっぱいに広げる -->
-    <div class="max-w-2xl mx-auto bg-white shadow-lg h-full flex flex-col">
-        <!-- ヘッダー -->
-        <div class="p-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
+    <div class="max-w-2xl mx-auto bg-white shadow-lg h-full chat-wrapper">
+        <!-- ヘッダーにIDを追加 -->
+        <div id="chat-header" class="p-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
             <div class="flex items-center">
                  <div class="relative flex items-center">
                     <img src="ichikawa_icon.png" alt="市川 昌志" class="w-10 h-10 rounded-full mr-2 border-2 border-white" onerror="this.onerror=null;this.src='https://placehold.co/40x40/EFEFEF/333333?text=I';">
@@ -36,8 +57,8 @@
             </div>
         </div>
 
-        <!-- チャットコンテナを可変領域にして残りの高さを埋める -->
-        <div class="p-6 space-y-6 overflow-y-auto flex-grow">
+        <!-- チャットコンテナにIDを追加し、ヘッダー分のパディングを追加 -->
+        <div id="chat-container" class="p-6 space-y-6 overflow-y-auto flex-grow" style="padding-top: 80px;">
 
             <!-- 強調された区切り線 -->
             <div class="flex items-center my-4">
@@ -311,5 +332,40 @@
         </div>
     </div>
 
+    <script>
+        // スクロールでヘッダーを非表示にするスクリプト
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatHeader = document.getElementById('chat-header');
+            const chatContainer = document.getElementById('chat-container');
+            if (!chatHeader || !chatContainer) return;
+
+            // ヘッダーの高さを取得して、コンテナのパディングに設定
+            const headerHeight = chatHeader.offsetHeight;
+            chatContainer.style.paddingTop = `${headerHeight + 24}px`; // 24pxは元のp-6のパディング
+
+            let lastScrollTop = 0;
+            const delta = 5; // スクロールの揺れを吸収するための閾値
+
+            chatContainer.addEventListener('scroll', function() {
+                const st = this.scrollTop;
+
+                // デルタ値より大きいスクロールか確認
+                if (Math.abs(lastScrollTop - st) <= delta) {
+                    return;
+                }
+
+                // 下にスクロールしていて、ヘッダーの高さを超えた場合
+                if (st > lastScrollTop && st > headerHeight) {
+                    // ヘッダーを隠す
+                    chatHeader.classList.add('header-hidden');
+                } else {
+                    // 上にスクロールした場合
+                    chatHeader.classList.remove('header-hidden');
+                }
+
+                lastScrollTop = st;
+            });
+        });
+    </script>
 </body>
 </html>
