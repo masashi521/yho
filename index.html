@@ -7,6 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* 画面全体を正しく利用するための基本スタイル */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: 'Inter', sans-serif;
         }
@@ -14,9 +20,10 @@
 </head>
 <body class="bg-gray-100">
 
-    <div class="max-w-2xl mx-auto my-8 bg-white rounded-lg shadow-lg">
+    <!-- コンテナ全体をFlexboxにして高さいっぱいに広げる -->
+    <div class="max-w-2xl mx-auto bg-white shadow-lg h-full flex flex-col">
         <!-- ヘッダー -->
-        <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+        <div class="p-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
             <div class="flex items-center">
                  <div class="relative flex items-center">
                     <img src="ichikawa_icon.png" alt="市川 昌志" class="w-10 h-10 rounded-full mr-2 border-2 border-white" onerror="this.onerror=null;this.src='https://placehold.co/40x40/EFEFEF/333333?text=I';">
@@ -29,8 +36,8 @@
             </div>
         </div>
 
-        <!-- チャットコンテナ -->
-        <div class="p-6 space-y-6 overflow-y-auto" style="max-height: 70vh;">
+        <!-- チャットコンテナを可変領域にして残りの高さを埋める -->
+        <div class="p-6 space-y-6 overflow-y-auto flex-grow">
 
             <!-- 強調された区切り線 -->
             <div class="flex items-center my-4">
